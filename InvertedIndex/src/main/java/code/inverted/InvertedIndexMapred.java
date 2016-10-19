@@ -40,9 +40,6 @@ public class InvertedIndexMapred {
 				InterruptedException {
 			// TODO: You should implement inverted index mapper here
 			StringIntegerList indincesList=new StringIntegerList();
-			System.out.print(articleTitle.toString());
-			System.out.println("~~~~~~");
-			System.out.print(indices.toString());
 			indincesList.readFromString(indices.toString());			
 			List<StringInteger> outputList=indincesList.getIndices();
 			StringInteger Value;
@@ -50,7 +47,6 @@ public class InvertedIndexMapred {
 			for (StringInteger pair : outputList) {  
 				Key.set(pair.getString());
 				Value=new StringInteger(articleTitle.toString(),pair.getValue());
-//				System.out.println(pair.getString()+"~"+pair.getValue());
 				context.write(Key,Value);			  
 			} 
 		}
@@ -60,13 +56,11 @@ public class InvertedIndexMapred {
 		@Override
 		public void reduce(Text lemma, Iterable<StringInteger> articlesAndFreqs, Context context)
 				throws IOException, InterruptedException {
-			// TODO: You should implement inverted index reducer here
-			
+			// TODO: You should implement inverted index reducer here			
 			Text Key=lemma;
 			StringIntegerList  Value;
 			HashMap<String,Integer> stringIntegerMap=new HashMap<String,Integer>();
 			for(StringInteger stringInteger:articlesAndFreqs){
-//				System.out.println(stringInteger.getString()+"~"+stringInteger.getValue());
 				stringIntegerMap.put(stringInteger.getString(),new Integer(stringInteger.getValue()));
 			}		
 			Value=new StringIntegerList(stringIntegerMap);
