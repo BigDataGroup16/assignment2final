@@ -80,49 +80,39 @@ public class InvertedIndexMapred {
 		Configuration conf=new Configuration();
 		GenericOptionsParser gop=new GenericOptionsParser(conf, args);
 		String[] otherArgs=gop.getRemainingArgs();
-		conf.set(KeyValueLineRecordReader.KEY_VALUE_SEPERATOR, "	"); 
 		
-		Job job1=Job.getInstance(conf, "Lamma Index");
-		Job job2=Job.getInstance(conf, "Inverted Index");
-		
-		job1.setJarByClass(InvertedIndexMapred.class);
-
-		
-		job1.setNumReduceTasks(0);
-		job1.setMapperClass(LemmaIndexMapper.class);	
-		job1.setInputFormatClass(WikipediaPageInputFormat.class);
-		job1.setOutputKeyClass(Text.class);
-		job1.setOutputValueClass(StringIntegerList.class);
-		FileInputFormat.addInputPath(job1, new Path(otherArgs[0]));
-		FileOutputFormat.setOutputPath(job1, new Path(otherArgs[1]));
-		
+		if(otherArgs[0].equals("-l")){
+			Job job=Job.getInstance(conf, "Lamma Index");
+			job.setJarByClass(InvertedIndexMapred.class);
+			job.setNumReduceTasks(0);
+			job.setMapperClass(LemmaIndexMapper.class);	
+			job.setInputFormatClass(WikipediaPageInputFormat.class);
+			job.setOutputKeyClass(Text.class);
+			job.setOutputValueClass(StringIntegerList.class);
 			
-		job2.setMapperClass(InvertedIndexMapper.class);
-		job2.setReducerClass(InvertedIndexReducer.class);
-		job2.setInputFormatClass(KeyValueTextInputFormat.class);
-		job2.setMapOutputKeyClass(Text.class);
-		job2.setMapOutputValueClass(StringInteger.class);
-	
-		job2.setOutputKeyClass(Text.class);
-		job2.setOutputValueClass(StringIntegerList.class);
-		
-		FileInputFormat.addInputPath(job2, new Path(args[1]));
-		FileOutputFormat.setOutputPath(job2, new Path(args[2]));
-		
-		ControlledJob ctrljob1=new  ControlledJob(conf);   
-	    ctrljob1.setJob(job1);
-		
-        ControlledJob ctrljob2=new ControlledJob(conf);   
-        ctrljob2.setJob(job2); 
-        
-        ctrljob2.addDependingJob(ctrljob1);
-        JobControl jobCtrl=new JobControl("myctrl");
-        
-        jobCtrl.addJob(ctrljob1);   
-        jobCtrl.addJob(ctrljob2);    
-        Thread  t=new Thread(jobCtrl);   
-        t.start();  
-		System.exit((job1.waitForCompletion(true) && job2.waitForCompletion(true))?0:1);
+			FileInputFormat.addInputPath(job, new Path(otherArgs[1]));
+			FileOutputFormat.setOutputPath(job, new Path(otherArgs[2]));
+			
+			System.exit(job.waitForCompletion(true)?0:1);
+
+		}
+		else if(otherArgs[0].equals("-i")){
+			conf.set(KeyValueLineRecordReader.KEY_VALUE_SEPERATOR, "	"); 
+			Job job=Job.getInstance(conf, "Inverted Index");
+			job.setJarByClass(InvertedIndexMapred.class);
+			job.setMapperClass(InvertedIndexMapper.class);
+			job.setReducerClass(InvertedIndexReducer.class);
+			job.setInputFormatClass(KeyValueTextInputFormat.class);
+			job.setMapOutputKeyClass(Text.class);
+			job.setMapOutputValueClass(StringInteger.class);
+			job.setOutputKeyClass(Text.class);
+			job.setOutputValueClass(StringIntegerList.class);
+			
+			FileInputFormat.addInputPath(job, new Path(otherArgs[1]));
+			FileOutputFormat.setOutputPath(job, new Path(otherArgs[2]));
+			
+			System.exit(job.waitForCompletion(true)?0:1);
+		}
 	
 	}
 }
