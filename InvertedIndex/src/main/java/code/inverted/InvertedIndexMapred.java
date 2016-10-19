@@ -75,7 +75,7 @@ public class InvertedIndexMapred {
 		GenericOptionsParser gop=new GenericOptionsParser(conf, args);
 		String[] otherArgs=gop.getRemainingArgs();
 		
-		if(otherArgs[0].equals("-l")){
+		if(otherArgs[1].equals("-l")){
 			Job job=Job.getInstance(conf, "Lamma Index");
 			job.setJarByClass(InvertedIndexMapred.class);
 			job.setNumReduceTasks(0);
@@ -84,13 +84,13 @@ public class InvertedIndexMapred {
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(StringIntegerList.class);
 			
-			FileInputFormat.addInputPath(job, new Path(otherArgs[1]));
-			FileOutputFormat.setOutputPath(job, new Path(otherArgs[2]));
+			FileInputFormat.addInputPath(job, new Path(otherArgs[2]));
+			FileOutputFormat.setOutputPath(job, new Path(otherArgs[3]));
 			
 			System.exit(job.waitForCompletion(true)?0:1);
 
 		}
-		else if(otherArgs[0].equals("-i")){
+		else if(otherArgs[1].equals("-i")){
 			conf.set(KeyValueLineRecordReader.KEY_VALUE_SEPERATOR, "	"); 
 			Job job=Job.getInstance(conf, "Inverted Index");
 			job.setJarByClass(InvertedIndexMapred.class);
@@ -102,8 +102,8 @@ public class InvertedIndexMapred {
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(StringIntegerList.class);
 			
-			FileInputFormat.addInputPath(job, new Path(otherArgs[1]));
-			FileOutputFormat.setOutputPath(job, new Path(otherArgs[2]));
+			FileInputFormat.addInputPath(job, new Path(otherArgs[2]));
+			FileOutputFormat.setOutputPath(job, new Path(otherArgs[3]));
 			
 			System.exit(job.waitForCompletion(true)?0:1);
 		}
