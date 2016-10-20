@@ -69,7 +69,7 @@ public class Tokenizer {
 		patterns.add(nonword);
 		
 		// remove references
-		Pattern removeRef = Pattern.compile("&lt;ref&gt;.+?&lt;/ref&gt;");
+		Pattern removeRef = Pattern.compile("(&lt;ref&gt;.+?&lt;/ref&gt;)");
 		patterns.add(removeRef);
 		
 		// remove style markings
