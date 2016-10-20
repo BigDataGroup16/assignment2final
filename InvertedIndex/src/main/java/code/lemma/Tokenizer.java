@@ -60,25 +60,25 @@ public class Tokenizer {
 
 		List<Pattern> patterns = new ArrayList<Pattern>();
 
+		// remove style markings
+		Pattern removeStyle = Pattern.compile("''+");
+		patterns.add(removeStyle);
+		
 		//remove 's 'd 't 'll
 		Pattern removeS = Pattern.compile("('s|s'|'d|'t|'ll)" + "\\s");
 		patterns.add(removeS);
-		
-		// remove all non-word characters
-		Pattern nonword = Pattern.compile("\\P{L}+");
-		patterns.add(nonword);
 		
 		// remove references
 		Pattern removeRef = Pattern.compile("(&lt;ref&gt;.+?&lt;/ref&gt;)");
 		patterns.add(removeRef);
 		
-		// remove style markings
-		Pattern removeStyle = Pattern.compile("''+");
-		patterns.add(removeStyle);
-		
 		// remove urls
 		Pattern removeUrl = Pattern.compile("(https?|http):" + "((//)+[\\w\\/]*)");
 		patterns.add(removeUrl);
+		
+		// remove all non-word characters
+		Pattern nonword = Pattern.compile("\\P{L}+");
+		patterns.add(nonword);
 		
 		return patterns;
 	}
